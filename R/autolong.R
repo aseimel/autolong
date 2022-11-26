@@ -8,7 +8,7 @@
 #' @param info.csv a csv file that contains the required codinf information
 #' @return A matrix of the infile
 #' @export
-auto_agg <- function(info.csv){
+autolong <- function(info.csv){
 x <-  read.csv(info.csv)
 myCluster <- makeCluster(detectCores(), # number of cores to use
                          type = "PSOCK") # type of cluster
