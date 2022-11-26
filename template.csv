@@ -1,0 +1,2 @@
+filename,item_label,project_label,item_var,item_na,item_scale_min,item_scale_max,reverse_scale,country_constant,country_var,country_format,country_link,year_constant,year_var,weight
+example_file.dta,example_identity,example_project,v111,none,1,3,no,no,isocntry,iso2c,none,yes,1982,v8
