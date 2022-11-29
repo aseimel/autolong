@@ -16,19 +16,31 @@ registerDoParallel(myCluster)
 
 output <- foreach(i=1:nrow(x), .combine=rbind, .packages = c("tidyverse","naniar", "countrycode", "scales", "haven")) %dopar% {
 
-  format <- str_extract(tolower(x$filename[i]), "([^\\.]*)$")
+format <- str_extract(tolower(x$filename[i]), "([^\\.]*)$")
+#defining variables to load based on whether country/year is supplied by the table or by the dataset
+if (x$year_constant[i] == "no" & x$country_constant[i] == "no") {
+  vars <- c(x$item_var[i], x$year_var[i], x$country_var[i], x$weight[i])
+} else if (x$year_constant[i] == "no" & x$country_constant[i] == "yes") {
+  vars <- c(x$item_var[i], x$year_var[i], x$weight[i])
+} else if (x$year_constant[i] == "yes" & x$country_constant[i] == "no") {
+  vars <- c(x$item_var[i], x$country_var[i], x$weight[i])
+} else if (x$year_constant[i] == "yes" & x$country_constant[i] == "yes") {
+  vars <- c(x$item_var[i], x$weight[i])
+} else {print(paste("Error: one of the constant dummies is not correctly set in row", i))}
+
+
 
   #decting file format and loading data
   if (format == "dta") {
-    c <-  read_dta(x$filename[i])
+    c <-  read_dta(x$filename[i], col_select = vars)
   } else if (format == "rds") {
     c <-  readRDS(info$filename[i])
   } else if (format == "sav") {
-    c <-  read_sav(info$filename[i])
+    c <-  read_sav(info$filename[i], col_select = vars)
   } else if (format == "por") {
-    c <-  read_spss(info$filename[i])
+    c <-  read_spss(info$filename[i], col_select = vars)
   } else if (format == "sas7bdat") {
-    c <-  read_sas(info$filename[i])
+    c <-  read_sas(info$filename[i], col_select = vars)
   } else {
     paste("Unknown file format in row", i)
   }
