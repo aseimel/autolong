@@ -34,13 +34,15 @@ if (x$year_constant[i] == "no" & x$country_constant[i] == "no") {
   if (format == "dta") {
     c <-  read_dta(x$filename[i], col_select = vars)
   } else if (format == "rds") {
-    c <-  readRDS(info$filename[i])
+    c <-  readRDS(x$filename[i])
+  } else if (format == "csv") {
+    c <-  read_csv(x$filename[i], col_select = vars)
   } else if (format == "sav") {
-    c <-  read_sav(info$filename[i], col_select = vars)
+    c <-  read_sav(x$filename[i], col_select = vars)
   } else if (format == "por") {
-    c <-  read_spss(info$filename[i], col_select = vars)
+    c <-  read_spss(x$filename[i], col_select = vars)
   } else if (format == "sas7bdat") {
-    c <-  read_sas(info$filename[i], col_select = vars)
+    c <-  read_sas(x$filename[i], col_select = vars)
   } else {
     paste("Unknown file format in row", i)
   }
@@ -82,7 +84,7 @@ if (x$year_constant[i] == "no" & x$country_constant[i] == "no") {
 
   c <- c %>%
     group_by_at(groups) %>%
-    summarise(response = weighted.mean(response, eval(parse(text = x$weight[i])), na.rm = T),
+    summarise(response = weighted.mean(response, as.numeric(eval(parse(text = x$weight[i]))), na.rm = T),
               sample = n()) %>%
     mutate(project = x$project_label[i],
            item = x$item_label[i])
